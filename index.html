@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音合成演示导航 🎭🗣️</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f0f4f8;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        .demo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .demo-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .demo-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .demo-link {
+            display: block;
+            text-decoration: none;
+            color: #3498db;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .demo-description {
+            margin-top: 10px;
+            color: #666;
+        }
+        .emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>语音合成演示导航 🎭🗣️</h1>
+        <ul class="demo-list">
+            <li class="demo-item">
+                <a href="tts-demo.html" class="demo-link">
+                    <span class="emoji">🎙️</span>TTS 语音合成演示
+                </a>
+                <p class="demo-description">体验基本的文本到语音转换功能，可自定义语言、声音、音调和语速。</p>
+            </li>
+            <li class="demo-item">
+                <a href="script-reading-demo.html" class="demo-link">
+                    <span class="emoji">📜</span>剧本朗读演示
+                </a>
+                <p class="demo-description">体验多角色对话的语音合成，模拟真实的剧本朗读效果。</p>
+            </li>
+            <li class="demo-item">
+                <a href="simple-tts.html" class="demo-link">
+                    <span class="emoji">🔊</span>简易语音合成工具
+                </a>
+                <p class="demo-description">一个简单直观的语音合成工具，适合快速测试和使用。</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
