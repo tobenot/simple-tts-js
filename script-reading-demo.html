@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剧本朗读演示</title>
+    <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
+    <script src="./tts.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        .script {
+            margin-bottom: 20px;
+        }
+        .line {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #f0f0f0;
+        }
+        .character {
+            font-weight: bold;
+            color: #3498db;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>剧本朗读演示</h1>
+        <div class="script">
+            <div v-for="(line, index) in script" :key="index" class="line">
+                <span class="character">{{ line.character }}:</span> {{ line.text }}
+            </div>
+        </div>
+        <button @click="readScript">朗读剧本</button>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const tts = new TTS();
+                const voiceConfig = {
+                    "旁白": { voice: "zh-CN-YunyangNeural", pitch: 0, rate: 0 },
+                    "小明": { voice: "zh-CN-YunxiNeural", pitch: -15, rate: 0 },
+                    "小红": { voice: "zh-CN-XiaoxiaoNeural", pitch: 0, rate: 10 }
+                };
+                const script = ref([
+                    { character: "旁白", text: "在一个阳光明媚的下午，小明和小红在公园里相遇了。" },
+                    { character: "小明", text: "嗨，小红！好久不见，你最近怎么样？" },
+                    { character: "小红", text: "小明！我很好啊，你呢？今天天气真不错，适合出来散步。" },
+                    { character: "小明", text: "是啊，我也觉得。对了，你听说了吗？下周学校要组织一次郊游。" },
+                    { character: "小红", text: "真的吗？太棒了！你知道我们要去哪里吗？" },
+                    { character: "小明", text: "听说是要去附近的山里，可以看瀑布和野花。" },
+                    { character: "小红", text: "哇，听起来很有意思！我们一定要好好准备一下。" },
+                    { character: "旁白", text: "就这样，小明和小红愉快地聊着天，期待着即将到来的郊游。" }
+                ]);
+
+                async function readScript() {
+                    for (const line of script.value) {
+                        await readLine(line);
+                    }
+                }
+
+                function readLine(line) {
+                    return new Promise((resolve) => {
+                        const config = voiceConfig[line.character];
+                        tts.getAudio({
+                            text: `${line.text}`,
+                            lang: 'zh-CN',
+                            voice: tts.getVoiceList('zh-CN').findIndex(v => v.ShortName === config.voice),
+                            pitch: config.pitch,
+                            rate: config.rate
+                        })
+                        .then((url) => {
+                            const audio = new Audio(url);
+                            audio.onended = resolve;
+                            audio.play();
+                        })
+                        .catch((err) => {
+                            console.error('播放失败:', err.message);
+                            resolve();
+                        });
+                    });
+                }
+
+                onMounted(async () => {
+                    await tts.fetchVoiceList();
+                });
+
+                return {
+                    script,
+                    readScript
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
