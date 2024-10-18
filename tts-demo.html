@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS 演示</title>
+    <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
+    <script src="./tts.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #34495e;
+        }
+        select, textarea, input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .range-value {
+            text-align: center;
+            font-weight: 500;
+            margin-top: 8px;
+            color: #7f8c8d;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;  
+            background: #e0e0e0;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%; 
+            background: #3498db;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border: 0;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+        }
+
+        /* 添加页脚样式 */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>TTS 语音合成演示</h1>
+        <div class="form-group">
+            <label for="lang">语言：</label>
+            <select id="lang" v-model="state.lang" @change="updateVoiceList">
+                <option v-for="lang in langList" :value="lang">{{ lang }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="voice">声音：</label>
+            <select id="voice" v-model="state.voice">
+                <option v-for="(voice, index) in voiceList" :value="index">{{ voice.ShortName }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="pitch">音调：</label>
+            <input type="range" id="pitch" v-model.number="state.pitch" min="-100" max="100" step="10">
+            <div class="range-value">{{ state.pitch }}</div>
+        </div>
+        <div class="form-group">
+            <label for="rate">语速：</label>
+            <input type="range" id="rate" v-model.number="state.rate" min="-100" max="100" step="10">
+            <div class="range-value">{{ state.rate }}</div>
+        </div>
+        <div class="form-group">
+            <label for="text">文本：</label>
+            <textarea id="text" v-model="state.text" placeholder="请输入要转换的文本"></textarea>
+        </div>
+        <button @click="speak">播放语音</button>
+        
+        <div class="footer">
+            <p>代码改自 <a href="https://github.com/pansong291/ashe/blob/64e57ef33bba7125636050765a2326e7b280e6b8/html/tool/text-audio.html#L102" target="_blank">pansong291/ashe</a></p>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const tts = new TTS();
+                const state = reactive({
+                    lang: 'zh-CN',
+                    voice: 0,
+                    pitch: 0,
+                    rate: 0,
+                    text: '这是一个TTS演示。'
+                });
+                const langList = ref([]);
+                const voiceList = ref([]);
+
+                onMounted(async () => {
+                    await tts.fetchVoiceList();
+                    langList.value = tts.getLangList();
+                    updateVoiceList();
+                });
+
+                function updateVoiceList() {
+                    voiceList.value = tts.getVoiceList(state.lang);
+                    state.voice = 0; // 重置为第一个声音
+                }
+
+                function speak() {
+                    tts.getAudio({
+                        text: state.text,
+                        lang: state.lang,
+                        voice: state.voice,
+                        pitch: state.pitch,
+                        rate: state.rate
+                    })
+                    .then((url) => {
+                        const audio = new Audio(url);
+                        audio.play();
+                    })
+                    .catch((err) => {
+                        alert('播放失败: ' + err.message);
+                    });
+                }
+
+                return {
+                    state,
+                    langList,
+                    voiceList,
+                    updateVoiceList,
+                    speak
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
