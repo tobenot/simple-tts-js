@@ -68,7 +68,7 @@
         </div>
         <div class="controls">
             <label>
-                <input type="checkbox" v-model="parallelReading"> 并行读剧本
+                <input type="checkbox" v-model="parallelReading" checked> 并行读剧本
             </label>
         </div>
         <button @click="readScript">朗读剧本</button>
@@ -81,8 +81,8 @@
             setup() {
                 const tts = new TTS();
                 const voiceConfig = {
-                    "旁白": { voice: "zh-CN-YunyangNeural", pitch: 0, rate: 0 },
-                    "小明": { voice: "zh-CN-YunxiNeural", pitch: -15, rate: 0 },
+                    "旁白": { voice: "zh-CN-XiaoxiaoNeural", pitch: -10, rate: 0 },
+                    "小明": { voice: "zh-CN-YunxiNeural", pitch: -15, rate: 5 },
                     "小红": { voice: "zh-CN-XiaoxiaoNeural", pitch: 0, rate: 10 }
                 };
                 const script = ref([
@@ -113,12 +113,13 @@
 
                 async function readScriptParallel() {
                     const maxConcurrent = 3; // 设置最大并发数量
-                    const audioUrls = [];
+                    const audioUrls = new Array(script.value.length);
                     const queue = [];
 
-                    for (const line of script.value) {
+                    for (let i = 0; i < script.value.length; i++) {
+                        const line = script.value[i];
                         const promise = getAudioForLine(line).then(url => {
-                            audioUrls.push(url);
+                            audioUrls[i] = url; // 按索引存储生成的音频 URL
                         });
                         queue.push(promise);
 
@@ -130,8 +131,12 @@
 
                     await Promise.all(queue);
 
-                    for (const url of audioUrls) {
-                        await playAudio(url);
+                    for (let i = 0; i < audioUrls.length; i++) {
+                        // 确保音频 URL 已生成
+                        while (!audioUrls[i]) {
+                            await new Promise(resolve => setTimeout(resolve, 100)); // 等待音频 URL 生成
+                        }
+                        await playAudio(audioUrls[i]);
                     }
                 }
 
