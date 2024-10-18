@@ -13,22 +13,43 @@
   <button onclick="synthesizeSpeech()">转换为语音</button>
   <br>
   <audio id="audioPlayer" controls></audio>
+  <div id="status"></div>
 
   <script>
-    const tts = new MsEdgeTTS();
+    const tts = new MsEdgeTTS(true);  // 将 true 作为参数传递，启用日志记录
+    const statusDiv = document.getElementById('status');
+
+    function updateStatus(message) {
+      console.log(message);
+      statusDiv.innerHTML += message + '<br>';
+    }
 
     async function synthesizeSpeech() {
       const inputText = document.getElementById('inputText').value;
       const audioPlayer = document.getElementById('audioPlayer');
+      statusDiv.innerHTML = '';
 
       try {
+        updateStatus('开始语音合成');
         await tts.setMetadata('zh-CN-XiaoxiaoNeural', MsEdgeTTS.OUTPUT_FORMAT.WEBM_24KHZ_16BIT_MONO_OPUS);
+        updateStatus('元数据设置完成');
+        
         const audioBlob = await tts.toStream(inputText);
+        updateStatus(`音频 Blob 已创建，大小: ${audioBlob.size} 字节`);
+        
         const audioUrl = URL.createObjectURL(audioBlob);
         audioPlayer.src = audioUrl;
+        updateStatus('音频 URL 已设置到播放器');
+        
+        audioPlayer.onloadedmetadata = () => updateStatus('音频元数据已加载');
+        audioPlayer.oncanplay = () => updateStatus('音频可以开始播放');
+        audioPlayer.onerror = (e) => updateStatus(`音频加载错误: ${e.target.error.message}`);
+        
+        await audioPlayer.play();
+        updateStatus('音频开始播放');
       } catch (error) {
+        updateStatus(`错误: ${error.message}`);
         console.error('语音合成失败:', error);
-        alert('语音合成失败,请查看控制台了解详情。');
       }
     }
 
