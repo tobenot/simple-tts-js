@@ -11,16 +11,14 @@
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             line-height: 1.6;
             color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+        }
+        .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
-            background-color: #f5f7fa;
-        }
-        .container {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
         }
         h1 {
             text-align: center;
@@ -28,18 +26,27 @@
             margin-bottom: 30px;
             font-weight: 300;
         }
-        .script {
+        .controls {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .line {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            background-color: #f0f0f0;
+        .controls label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            color: #2c3e50;
         }
-        .character {
-            font-weight: bold;
-            color: #3498db;
+        .controls input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
         button {
             background-color: #3498db;
@@ -50,28 +57,52 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s ease;
-            width: 100%;
-            margin-top: 20px;
         }
         button:hover {
             background-color: #2980b9;
+        }
+        .script {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .line {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s ease;
+        }
+        .line:hover {
+            background-color: #e9ecef;
+        }
+        .character {
+            font-weight: bold;
+            color: #3498db;
+            margin-right: 10px;
+        }
+        .text {
+            color: #2c3e50;
         }
     </style>
 </head>
 <body>
     <div id="app" class="container">
         <h1>剧本朗读演示</h1>
-        <div class="script">
-            <div v-for="(line, index) in script" :key="index" class="line">
-                <span class="character">{{ line.character }}:</span> {{ line.text }}
-            </div>
-        </div>
         <div class="controls">
             <label>
-                <input type="checkbox" v-model="parallelReading" checked> 并行读剧本
+                <input type="checkbox" v-model="parallelReading">
+                并行加载语音
             </label>
+            <button @click="readScript">朗读剧本</button>
         </div>
-        <button @click="readScript">朗读剧本</button>
+        <div class="script">
+            <div v-for="(line, index) in script" :key="index" class="line">
+                <span class="character">{{ line.character }}:</span>
+                <span class="text">{{ line.text }}</span>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -93,9 +124,9 @@
                     { character: "图尔斯", text: "罗伯特，我们曾是好友，但今天你只是一道阻碍。无法阻止我完成任务！" },
                     { character: "旁白", text: "然而，他的攻击轨迹被罗伯特的灵能造成了干扰，长剑未能命中目标，反而露出了一丝破绽。" },
                     { character: "旁白", text: "这时，灵能的波动在二人之间弥漫，空气中充满了近乎凝固的紧张。罗伯特在躲避攻击的同时，发现自己敏锐的反应逐渐被敌人的异能所影响，意识到对方的异能并不简单。他趁机向前一步，运用流转的灵能再次调整打击姿态，试图给图尔斯施加压力。图尔斯则在这番失衡中感受到了紧迫感，灵力的消耗让他不得不在心中警惕，战斗的转折似乎就在眼前。" },
-                    { character: "旁白", text: "以上是剧本朗读演示，想体验更多精彩的文字剧本游戏吗？快来bb.tobenot.top/main，我们的大模型剧本杀等你来玩！" }
+                    { character: "旁白", text: "以上是剧本朗读演示，想体验更多精彩的文字剧游戏吗？快来bb.tobenot.top/main，我们的大模型剧本杀等你来玩！" }
                 ]);
-                const parallelReading = ref(false);
+                const parallelReading = ref(true); // 将初始值设置为 true
 
                 async function readScript() {
                     if (parallelReading.value) {
