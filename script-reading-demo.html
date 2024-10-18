@@ -81,19 +81,19 @@
             setup() {
                 const tts = new TTS();
                 const voiceConfig = {
-                    "旁白": { voice: "zh-CN-XiaoxiaoNeural", pitch: -10, rate: 0 },
-                    "小明": { voice: "zh-CN-YunxiNeural", pitch: -15, rate: 5 },
-                    "小红": { voice: "zh-CN-XiaoxiaoNeural", pitch: 0, rate: 10 }
+                    "旁白": { voice: "zh-CN-YunyangNeural", pitch: -5, rate: 0 },
+                    "罗伯特": { voice: "zh-CN-YunxiNeural", pitch: -10, rate: 5 },
+                    "图尔斯": { voice: "zh-CN-YunjianNeural", pitch: 0, rate: 5 }
                 };
                 const script = ref([
-                    { character: "旁白", text: "在一个阳光明媚的下午，小明和小红在公园里相遇了。" },
-                    { character: "小明", text: "嗨，小红！好久不见，你最近怎么样？" },
-                    { character: "小红", text: "小明！我很好啊，你呢？今天天气真不错，适合出来散步。" },
-                    { character: "小明", text: "是啊，我也觉得。对了，你听说了吗？下周学校要组织一次郊游。" },
-                    { character: "小红", text: "真的吗？太棒了！你知道我们要去哪里吗？" },
-                    { character: "小明", text: "听说是要去附近的山里，可以看瀑布和野花。" },
-                    { character: "小红", text: "哇，听起来很有意思！我们一定要好好准备一下。" },
-                    { character: "旁白", text: "就这样，小明和小红愉快地聊着天，期待着即将到来的郊游。" }
+                    { character: "旁白", text: "罗伯特蓄势待发，踏上前方，手中的黑色硬木长棍如雷霆般向图尔斯猛击而来，威势逼人。" },
+                    { character: "罗伯特", text: "你以为能轻易进入银月寺吗？" },
+                    { character: "旁白", text: "这一击似乎要将对方撕裂，挑战着图尔斯的意志。然而，图尔斯的反应却不如罗伯特预期，他的盾牌未能完全挡住这一重击，结果在冲撞中受到冲击，身体向后退去，灵能盾也出现细微的裂痕。" },
+                    { character: "旁白", text: "尽管受到攻击，图尔斯没有退缩，迅速调整重心，心中燃起斗志。他高举鳞甲盾，努力稳住身形，随即召唤出锋利的钢铁长剑，剑光一闪，剑身在阳光下闪烁着寒光。" },
+                    { character: "图尔斯", text: "罗伯特，我们曾是好友，但今天你只是一道阻碍。无法阻止我完成任务！" },
+                    { character: "旁白", text: "然而，他的攻击轨迹被罗伯特的灵能造成了干扰，长剑未能命中目标，反而露出了一丝破绽。" },
+                    { character: "旁白", text: "这时，灵能的波动在二人之间弥漫，空气中充满了近乎凝固的紧张。罗伯特在躲避攻击的同时，发现自己敏锐的反应逐渐被敌人的异能所影响，意识到对方的异能并不简单。他趁机向前一步，运用流转的灵能再次调整打击姿态，试图给图尔斯施加压力。图尔斯则在这番失衡中感受到了紧迫感，灵力的消耗让他不得不在心中警惕，战斗的转折似乎就在眼前。" },
+                    { character: "旁白", text: "以上是剧本朗读演示，想体验更多精彩的文字剧本游戏吗？快来bb.tobenot.top/main，我们的大模型剧本杀等你来玩！" }
                 ]);
                 const parallelReading = ref(false);
 
