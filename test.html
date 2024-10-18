@@ -12,6 +12,8 @@
   <br>
   <button onclick="synthesizeSpeech()">转换为语音</button>
   <br>
+  <button onclick="playAudioWithContext()">使用 AudioContext 播放音频</button>
+  <br>
   <audio id="audioPlayer" controls></audio>
   <div id="status"></div>
 
@@ -50,6 +52,23 @@
       } catch (error) {
         updateStatus(`错误: ${error.message}`);
         console.error('语音合成失败:', error);
+      }
+    }
+
+    async function playAudioWithContext() {
+      const inputText = document.getElementById('inputText').value;
+      statusDiv.innerHTML = '';
+
+      try {
+        updateStatus('开始使用 AudioContext 播放音频');
+        await tts.setMetadata('zh-CN-XiaoxiaoNeural', MsEdgeTTS.OUTPUT_FORMAT.WEBM_24KHZ_16BIT_MONO_OPUS);
+        updateStatus('元数据设置完成');
+        
+        await tts.playAudioWithAudioContext(inputText);
+        updateStatus('音频播放完成');
+      } catch (error) {
+        updateStatus(`错误: ${error.message}`);
+        console.error('播放音频失败:', error);
       }
     }
 
