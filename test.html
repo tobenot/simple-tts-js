@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MsEdgeTTS 测试</title>
+  <script src="tts.js"></script>
+</head>
+<body>
+  <h1>MsEdgeTTS 测试</h1>
+  <textarea id="inputText" rows="4" cols="50">请输入要转换为语音的文本。</textarea>
+  <br>
+  <button onclick="synthesizeSpeech()">转换为语音</button>
+  <br>
+  <audio id="audioPlayer" controls></audio>
+
+  <script>
+    const tts = new MsEdgeTTS();
+
+    async function synthesizeSpeech() {
+      const inputText = document.getElementById('inputText').value;
+      const audioPlayer = document.getElementById('audioPlayer');
+
+      try {
+        await tts.setMetadata('zh-CN-XiaoxiaoNeural', MsEdgeTTS.OUTPUT_FORMAT.WEBM_24KHZ_16BIT_MONO_OPUS);
+        const audioBlob = await tts.toStream(inputText);
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioPlayer.src = audioUrl;
+      } catch (error) {
+        console.error('语音合成失败:', error);
+        alert('语音合成失败,请查看控制台了解详情。');
+      }
+    }
+
+    window.addEventListener('beforeunload', () => {
+      tts.close();
+    });
+  </script>
+</body>
+</html>
