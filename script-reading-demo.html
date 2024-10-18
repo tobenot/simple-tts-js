@@ -66,6 +66,11 @@
                 <span class="character">{{ line.character }}:</span> {{ line.text }}
             </div>
         </div>
+        <div class="controls">
+            <label>
+                <input type="checkbox" v-model="parallelReading"> 并行读剧本
+            </label>
+        </div>
         <button @click="readScript">朗读剧本</button>
     </div>
 
@@ -90,10 +95,28 @@
                     { character: "小红", text: "哇，听起来很有意思！我们一定要好好准备一下。" },
                     { character: "旁白", text: "就这样，小明和小红愉快地聊着天，期待着即将到来的郊游。" }
                 ]);
+                const parallelReading = ref(false);
 
                 async function readScript() {
+                    if (parallelReading.value) {
+                        await readScriptParallel();
+                    } else {
+                        await readScriptSequential();
+                    }
+                }
+
+                async function readScriptSequential() {
                     for (const line of script.value) {
                         await readLine(line);
+                    }
+                }
+
+                async function readScriptParallel() {
+                    const audioPromises = script.value.map(line => getAudioForLine(line));
+                    const audioUrls = await Promise.all(audioPromises);
+                    
+                    for (const url of audioUrls) {
+                        await playAudio(url);
                     }
                 }
 
@@ -119,13 +142,33 @@
                     });
                 }
 
+                function getAudioForLine(line) {
+                    const config = voiceConfig[line.character];
+                    return tts.getAudio({
+                        text: `${line.text}`,
+                        lang: 'zh-CN',
+                        voice: tts.getVoiceList('zh-CN').findIndex(v => v.ShortName === config.voice),
+                        pitch: config.pitch,
+                        rate: config.rate
+                    });
+                }
+
+                function playAudio(url) {
+                    return new Promise((resolve) => {
+                        const audio = new Audio(url);
+                        audio.onended = resolve;
+                        audio.play();
+                    });
+                }
+
                 onMounted(async () => {
                     await tts.fetchVoiceList();
                 });
 
                 return {
                     script,
-                    readScript
+                    readScript,
+                    parallelReading
                 };
             }
         }).mount('#app');
