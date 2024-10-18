@@ -7,80 +7,111 @@
     <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
     <style>
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f0f4f8;
             margin: 0;
             padding: 20px;
             color: #333;
+            line-height: 1.6;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
         }
         .main-content {
             display: flex;
-            gap: 30px;
+            gap: 40px;
+            flex-wrap: wrap;
         }
         .left-panel, .right-panel {
             flex: 1;
+            min-width: 300px;
         }
         .item-line {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .item-title {
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 10px;
             color: #34495e;
+            font-size: 1.1em;
         }
         select, input[type="range"], textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 16px;
-            background-color: #ecf0f1;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         textarea {
-            height: 150px;
+            height: 180px;
             resize: vertical;
         }
         .btn-group {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .btn {
             background-color: #3498db;
             color: white;
             padding: 12px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
         }
         .btn:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .range-value {
             text-align: center;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 8px;
+            color: #3498db;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
         }
     </style>
   </head>
   <body>
     <div id="app" class="container">
-      <h1>语音合成工具</h1>
+      <h1>智能语音合成工具</h1>
       <div class="main-content">
         <div class="left-panel">
           <div class="item-line">
@@ -118,8 +149,10 @@
             <input step="10" v-model.number="state.rate" type="range" min="-100" max="100" />
             <p class="range-value">{{ state.rate }}</p>
           </div>
-          <div>代码改自 <a href="https://github.com/pansong291/ashe/blob/64e57ef33bba7125636050765a2326e7b280e6b8/html/tool/text-audio.html#L102" target="_blank">pansong291/ashe</a></div>
         </div>
+      </div>
+      <div class="footer">
+        代码改自 <a href="https://github.com/pansong291/ashe/blob/64e57ef33bba7125636050765a2326e7b280e6b8/html/tool/text-audio.html#L102" target="_blank">pansong291/ashe</a>
       </div>
     </div>
     <script>
