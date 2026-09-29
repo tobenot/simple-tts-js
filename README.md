@@ -1,6 +1,11 @@
 # 智能语音合成工具
 
+> ⚠️ **本仓库已归档**：语音合成功能已迁入 [Tobenot-Web-Tools](https://github.com/tobenot/Tobenot-Web-Tools)（`apps/simple-tts`，GitHub Pages 直接可用）。本仓库保留历史代码，不再维护。
+>
+> `tts-demo-server.py` 仅用于本机预览（只监听 127.0.0.1，拒绝隐藏路径）。如需局域网分享，请部署到 Web 服务器或使用 Web Tools 版本。
+
 ## 项目描述
+
 
 这是一个基于Vue 3和Web Speech API的智能语音合成工具。用户可以输入文本，选择语言和语音，调整音调和语速，然后将文本转换为语音。该工具支持多种语言和声音，并提供播放和下载音频的功能。
 
