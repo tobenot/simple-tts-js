@@ -1,13 +1,8 @@
 # 智能语音合成工具
 
-> ⚠️ **本仓库已归档**：语音合成功能已迁入 [Tobenot-Web-Tools](https://github.com/tobenot/Tobenot-Web-Tools)（`apps/simple-tts`，GitHub Pages 直接可用）。本仓库保留历史代码，不再维护。
->
-> `tts-demo-server.py` 仅用于本机预览（只监听 127.0.0.1，拒绝隐藏路径）。如需局域网分享，请部署到 Web 服务器或使用 Web Tools 版本。
-
 ## 项目描述
 
-
-这是一个基于Vue 3和Web Speech API的智能语音合成工具。用户可以输入文本，选择语言和语音，调整音调和语速，然后将文本转换为语音。该工具支持多种语言和声音，并提供播放和下载音频的功能。
+这是一个基于 Vue 3 的浏览器语音合成工具。当前 `simple-tts.html` 与共享的 `tts.js` 使用 SSML、远端 readaloud WebSocket 服务及返回的音频 Blob，不使用浏览器的 `speechSynthesis` / `SpeechSynthesisUtterance`。用户可以输入文本，选择语言和语音，调整音调和语速，然后播放或下载返回的音频。可用语言和声音以服务实际返回为准。
 
 ## 主要功能
 
@@ -25,8 +20,22 @@
 - CSS3
 - JavaScript (ES6+)
 - Vue 3
-- Web Speech API
-- WebSocket
+- SSML / 远端 readaloud 合成
+- WebSocket 与音频 Blob
+
+## 本地入口与外部依赖
+
+本仓库没有 npm manifest 或构建链。`index.html` 是入口导航，`simple-tts.html` 是独立面板，`tts-demo.html` 和 `script-reading-demo.html` 读取已跟踪的 `tts.js`。从仓库根用 Python 3 仅在本机预览：
+
+```bash
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
+打开 `http://127.0.0.1:8000/`，结束时 Ctrl+C。Windows 可用现有 Python 3 入口 `python` 执行相同参数。历史 `tts-demo-server.py` 会服务调用时的工作目录并监听所有接口，本批未运行，冷启动不要求使用它。
+
+页面从 unpkg 获取 Vue 3.2.45，并向 `speech.platform.bing.com` 请求声音列表、建立合成 WebSocket。这些运行时外部输入不由 Git 保存，本地 HTML 能打开不等于服务当前可用或能离线合成。本批只检查代码声明，没有连接服务、发送文本、验证当前声音清单或取得音频，也没有变更服务访问参数。
+
+当前声明输出 `24khz-16bit-mono-opus`，页面把 Blob 标为 `audio/webm`。这是代码声明，不是本轮检查音频字节得到的格式鉴定。`rubbish/` 中是已跟踪的历史代码，不属于本轮新增缓存，没有因为名字含垃圾而删除。
 
 ## 如何使用
 
@@ -48,7 +57,7 @@
 
 # 声音报告
 
-中文（普通话，简体）声音报告：
+历史中文（普通话，简体）声音报告，保留作角色选择参考，不代表 2026-10-11 的服务声音列表已重新验证：
 
 1. 少女声音：
    - zh-CN-XiaoxiaoNeural（女性）：标准少女声音
